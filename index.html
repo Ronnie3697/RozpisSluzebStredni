@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rozpis úklidových služeb | Byt Střední</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏠</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand">
+        <span class="brand-icon">🏠</span>
+        <div>
+          <h1>Rozpis služeb na bytě</h1>
+          <p class="brand-subtitle">4 pokoje • 4 společné služby • 2 privátní zóny koupelen a WC</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="btnCurrentWeek" class="btn btn-secondary">
+          <span class="dot-pulse"></span>
+          <span>Dnešní týden</span>
+        </button>
+        <a href="rozpis_sluzeb_byt.xlsx" download class="btn btn-outline" title="Stáhnout původní Excel tabulku">
+          📥 Stáhnout Excel
+        </a>
+        <button id="btnPrint" class="btn btn-icon" title="Vytisknout na nástěnku">
+          🖨️
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-container">
+
+    <!-- Hero / Current Week Spotlight Banner -->
+    <section id="currentWeekBanner" class="spotlight-card">
+      <div class="spotlight-header">
+        <div>
+          <span class="badge badge-live">AKTUÁLNÍ TÝDEN</span>
+          <h2 id="spotlightTitle">Týden 1 (Načítání...)</h2>
+          <p id="spotlightDates" class="spotlight-dates">Termín: Pondělí – Neděle</p>
+        </div>
+        <div class="spotlight-countdown" id="spotlightCountdown">
+          <span class="countdown-label">Předání v neděli ve 20:00</span>
+          <span id="countdownText" class="countdown-value">Zbývá -- dní</span>
+        </div>
+      </div>
+
+      <div class="spotlight-grid" id="spotlightGrid">
+        <!-- Injected via JS: 4 cards for Room 1..4 for current week -->
+      </div>
+    </section>
+
+    <!-- Controls & Room Filter -->
+    <section class="toolbar-section">
+      <div class="tabs-nav" role="tablist">
+        <button class="tab-btn active" data-tab="tab-rooms" role="tab" aria-selected="true">
+          👥 Rozpis podle pokojů
+        </button>
+        <button class="tab-btn" data-tab="tab-services" role="tab" aria-selected="false">
+          📋 Rozpis podle služeb
+        </button>
+        <button class="tab-btn" data-tab="tab-rules" role="tab" aria-selected="false">
+          📖 Náplň služeb & Pravidla
+        </button>
+      </div>
+
+      <div class="filter-group">
+        <span class="filter-label">Filtrovat pokoj:</span>
+        <div class="room-filter-pills" id="roomFilterPills">
+          <button class="pill-btn active" data-room="all">Všechny</button>
+          <button class="pill-btn pill-room-1" data-room="1">Pokoj 1</button>
+          <button class="pill-btn pill-room-2" data-room="2">Pokoj 2</button>
+          <button class="pill-btn pill-room-3" data-room="3">Pokoj 3</button>
+          <button class="pill-btn pill-room-4" data-room="4">Pokoj 4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 1: Podle pokojů -->
+    <section id="tab-rooms" class="tab-pane active">
+      <div class="table-card">
+        <div class="table-header-info">
+          <h3>Celoroční plán po týdnech</h3>
+          <p>Přehled pro každý pokoj: <strong>Společná služba + Koupelna/WC</strong>. Každý týden si můžete odškrtnout splnění.</p>
+        </div>
+        <div class="table-responsive">
+          <table class="schedule-table" id="roomsTable">
+            <thead>
+              <tr>
+                <th class="col-week">Týden</th>
+                <th class="col-date">Termín</th>
+                <th class="col-room th-room-1">Pokoj 1</th>
+                <th class="col-room th-room-2">Pokoj 2</th>
+                <th class="col-room th-room-3">Pokoj 3</th>
+                <th class="col-room th-room-4">Pokoj 4</th>
+                <th class="col-status">Splněno</th>
+              </tr>
+            </thead>
+            <tbody id="roomsTableBody">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Podle služeb -->
+    <section id="tab-services" class="tab-pane">
+      <div class="table-card">
+        <div class="table-header-info">
+          <h3>Kdo má jakou službu</h3>
+          <p>Přehled rozdělený na společné prostory (rotace 4 pokojů) a sanitární zóny (rotace po dvojicích).</p>
+        </div>
+        <div class="table-responsive">
+          <table class="schedule-table services-table" id="servicesTable">
+            <thead>
+              <tr class="super-header">
+                <th colspan="2" class="th-group-term">Termín</th>
+                <th colspan="4" class="th-group-common">🧹 Společné prostory (rotace 4)</th>
+                <th colspan="4" class="th-group-sanitary">🚿 Koupelny & WC (rotace 2)</th>
+              </tr>
+              <tr class="sub-header">
+                <th class="col-week">Týden</th>
+                <th class="col-date">Termín</th>
+                <th>Schody</th>
+                <th>Kuchyň</th>
+                <th>Odpadky</th>
+                <th>Předsíň</th>
+                <th>Koupelna (1-2)</th>
+                <th>WC (1-2)</th>
+                <th>Koupelna (3-4)</th>
+                <th>WC (3-4)</th>
+              </tr>
+            </thead>
+            <tbody id="servicesTableBody">
+              <!-- Injected via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Náplň služeb & Pravidla -->
+    <section id="tab-rules" class="tab-pane">
+      <div class="rules-container">
+        
+        <div class="section-intro">
+          <h2>Náplň jednotlivých služeb</h2>
+          <p>Přesný popis toho, co která služba obnáší. Když každý ví, co má udělat, předejde se dohadům.</p>
+        </div>
+
+        <div class="chores-grid">
+          <!-- Card: Schody -->
+          <article class="chore-card chore-schody">
+            <div class="chore-card-header">
+              <div class="chore-icon">🧹</div>
+              <div>
+                <h3>Schody</h3>
+                <span class="chore-scope">Společné prostory domu</span>
+              </div>
+            </div>
+            <div class="chore-card-body">
+              <ul class="checklist">
+                <li><label><input type="checkbox"> Zamést a vytřít celé naše patro (chodbu před bytem).</label></li>
+                <li><label><input type="checkbox"> Zamést a vytřít dvoje schody směrem dolů včetně mezipatra.</label></li>
+                <li><label><input type="checkbox"> Zkontrolovat, že na mezipatře a schodech nezůstaly žádné letáky, kamínky nebo odpadky.</label></li>
+              </ul>
+              <div class="chore-tip">
+                💡 <strong>Doporučený termín:</strong> pátek odpoledne nebo sobota dopoledne.
+              </div>
+            </div>
+          </article>
+
+          <!-- Card: Kuchyň -->
+          <article class="chore-card chore-kuchyn">
+            <div class="chore-card-header">
+              <div class="chore-icon">🍳</div>
+              <div>
+                <h3>Kuchyň</h3>
+                <span class="chore-scope">Srdce bytu a vaření</span>
+              </div>
+            </div>
+            <div class="chore-card-body">
+              <ul class="checklist">
+                <li><label><input type="checkbox"> Starat se o linku, dřez a varnou desku (otírat mastnotu a drobky).</label></li>
+                <li><label><input type="checkbox"> Průběžně vyndávat umytou myčku a uklízet nádobí do skříněk.</label></li>
+                <li><label><input type="checkbox"> Zapnout myčku, jakmile se naplní (nenechávat nádobí stát ve dřezu).</label></li>
+                <li><label><input type="checkbox"> Pravidelně zametat a vytírat podlahu v kuchyni (min. 1× týdně důkladně).</label></li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Card: Odpadky -->
+          <article class="chore-card chore-odpadky">
+            <div class="chore-card-header">
+              <div class="chore-icon">🗑️</div>
+              <div>
+                <h3>Odpadky</h3>
+                <span class="chore-scope">Čistý vzduch na bytě</span>
+              </div>
+            </div>
+            <div class="chore-card-body">
+              <ul class="checklist">
+                <li><label><input type="checkbox"> Pravidelně vynášet pytle se směsným odpadem, jakmile jsou plné.</label></li>
+                <li><label><input type="checkbox"> Po vynesení VŽDY ihned nasadit nový čistý pytel do koše!</label></li>
+                <li><label><input type="checkbox"> Vynášet tříděný odpad (plast, papír, plechovky, sklo) do kontejnerů.</label></li>
+                <li><label><input type="checkbox"> Udržovat prostor kolem košů čistý (žádné loužičky a skvrny na podlaze).</label></li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Card: Předsíň -->
+          <article class="chore-card chore-predsin">
+            <div class="chore-card-header">
+              <div class="chore-icon">🛋️</div>
+              <div>
+                <h3>Předsíň</h3>
+                <span class="chore-scope">Vstupní reprezentativní zóna</span>
+              </div>
+            </div>
+            <div class="chore-card-body">
+              <ul class="checklist">
+                <li><label><input type="checkbox"> Zamést a vytřít podlahu v předsíni (hlavně prostor u vchodu a botníku).</label></li>
+                <li><label><input type="checkbox"> Srovnat boty v botníku a věšáky u vchodu.</label></li>
+                <li><label><input type="checkbox"> Stlát gauč / postel v předsíni, složit deky a polštáře.</label></li>
+                <li><label><input type="checkbox"> Otřít prach na botníku a vstupní skříňce.</label></li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Card: Koupelny -->
+          <article class="chore-card chore-koupelna">
+            <div class="chore-card-header">
+              <div class="chore-icon">🚿</div>
+              <div>
+                <h3>Koupelna</h3>
+                <span class="chore-scope">P1+P2 mají svou • P3+P4 mají svou</span>
+              </div>
+            </div>
+            <div class="chore-card-body">
+              <ul class="checklist">
+                <li><label><input type="checkbox"> Vyčistit umyvadlo, baterii a zrcadlo (od kapek a zubní pasty).</label></li>
+                <li><label><input type="checkbox"> Důkladně umýt vanu / sprcháč a vyčistit sítko od vlasů.</label></li>
+                <li><label><input type="checkbox"> Vytřít podlahu v koupelně.</label></li>
+                <li><label><input type="checkbox"> Vyvětrat a zkontrolovat/pověsit předložku.</label></li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Card: Záchod -->
+          <article class="chore-card chore-zachod">
+            <div class="chore-card-header">
+              <div class="chore-icon">🚽</div>
+              <div>
+                <h3>Záchod (WC)</h3>
+                <span class="chore-scope">P1+P2 mají své • P3+P4 mají své</span>
+              </div>
+            </div>
+            <div class="chore-card-body">
+              <ul class="checklist">
+                <li><label><input type="checkbox"> Důkladně vyčistit mísu WC čističem a štětkou.</label></li>
+                <li><label><input type="checkbox"> Dezinfekcí otřít prkénko shora i zespodu, splachovadlo a okolí mísy.</label></li>
+                <li><label><input type="checkbox"> Zkontrolovat stav a doplnit náhradní ruličky toaletního papíru.</label></li>
+                <li><label><input type="checkbox"> Vytřít podlahu na WC.</label></li>
+              </ul>
+            </div>
+          </article>
+        </div>
+
+        <!-- Rules Section -->
+        <div class="rules-card">
+          <div class="rules-card-header">
+            <h3>⚖️ Zlatá pravidla spolubydlení</h3>
+            <p>Pár jednoduchých zásad pro bezproblémové fungování celého bytu</p>
+          </div>
+          <div class="rules-list">
+            <div class="rule-item">
+              <div class="rule-badge">1</div>
+              <div>
+                <h4>Předání služeb</h4>
+                <p>Služba se oficiálně předává vždy v <strong>NEDĚLI do 20:00</strong>. Do té doby má mít příslušný pokoj vše hotovo.</p>
+              </div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-badge">2</div>
+              <div>
+                <h4>Nepřítomnost a odjezdy</h4>
+                <p>Když někdo odjíždí na týden domů nebo na dovolenou, je jeho povinností si <strong>včas domluvit výměnu</strong> nebo záskok s jiným pokojem.</p>
+              </div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-badge">3</div>
+              <div>
+                <h4>Průběžný pořádek</h4>
+                <p>Služba neslouží jako osobní uklízeč! Každý po sobě ihned utře linku, když něco rozlije nebo rozsype, a své použité nádobí dává rovnou do myčky.</p>
+              </div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-badge">4</div>
+              <div>
+                <h4>Spotřební materiál a chemie</h4>
+                <p>Když dochází jar, tablety do myčky, WC gel, toaletní papír nebo pytle do koše, napíše se to do společné skupiny a koupí se ze společného rozpočtu.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <div class="footer-container">
+      <p>Vygenerováno pro byt Střední • Rozvrh na 52 týdnů</p>
+      <p class="footer-hint">Tip: Rozpis funguje skvěle i na mobilu — uložte si odkaz na plochu telefonu!</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
