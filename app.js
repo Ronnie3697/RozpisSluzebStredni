@@ -38,13 +38,22 @@
     return `${day}.${month}.${year}`;
   }
 
+  // Calculate standard ISO Week Number (1-53)
+  function getISOWeek(date) {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  }
+
   // Generate Week Data
   function generateWeekData(w) {
     const weekStart = new Date(START_DATE.getTime() + w * 7 * 24 * 60 * 60 * 1000);
     const weekEnd = new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000);
+    const isoWeek = getISOWeek(weekStart);
 
     // Common chores rotation
-    // w % 4:
     const p1Comm = COMMON_CHORES[((0 - w) % 4 + 4) % 4];
     const p2Comm = COMMON_CHORES[((1 - w) % 4 + 4) % 4];
     const p3Comm = COMMON_CHORES[((2 - w) % 4 + 4) % 4];
@@ -66,7 +75,7 @@
 
     return {
       weekIndex: w,
-      weekNumber: w + 1,
+      isoWeek: isoWeek,
       startDate: weekStart,
       endDate: weekEnd,
       dateRangeStr: `${formatDate(weekStart)} – ${formatDate(weekEnd)}`,
@@ -85,7 +94,7 @@
     weeks.push(generateWeekData(i));
   }
 
-  // Determine current week
+  // Determine current week index
   const now = new Date();
   let currentWeekIndex = 0;
 
@@ -100,6 +109,8 @@
     } else if (now < start && i === 0) {
       currentWeekIndex = 0;
       break;
+    } else if (i === weeks.length - 1 && now > end) {
+      currentWeekIndex = i;
     }
   }
 
@@ -114,18 +125,18 @@
   // Render Spotlight Banner for Current Week
   function renderSpotlight(wIdx) {
     const cw = weeks[wIdx];
-    spotlightTitle.textContent = `Týden ${cw.weekNumber}`;
+    spotlightTitle.textContent = `Týden ${cw.isoWeek}`;
     spotlightDates.textContent = `Termín: ${formatFullDate(cw.startDate)} – ${formatFullDate(cw.endDate)}`;
 
-    // Calculate days remaining until Sunday 20:00
-    const handover = new Date(cw.endDate.getFullYear(), cw.endDate.getMonth(), cw.endDate.getDate(), 20, 0, 0);
-    const diffMs = handover.getTime() - now.getTime();
+    // Calculate days remaining until Sunday 23:59:59
+    const weekEndSunday = new Date(cw.endDate.getFullYear(), cw.endDate.getMonth(), cw.endDate.getDate(), 23, 59, 59);
+    const diffMs = weekEndSunday.getTime() - now.getTime();
     if (diffMs > 0) {
       const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
       const diffHours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
       countdownText.textContent = diffDays > 0 ? `Zbývá ${diffDays} dní a ${diffHours} hod.` : `Zbývá ${diffHours} hodin!`;
     } else {
-      countdownText.textContent = `Předání proběhlo`;
+      countdownText.textContent = `Týden ukončen`;
     }
 
     spotlightGrid.innerHTML = '';
@@ -159,13 +170,16 @@
     weeks.forEach((w) => {
       const tr = document.createElement('tr');
       tr.id = `week-row-${w.weekIndex}`;
+
       if (w.weekIndex === currentWeekIndex) {
         tr.classList.add('is-current-week');
+      } else if (w.weekIndex < currentWeekIndex) {
+        tr.classList.add('is-past-week');
       }
 
       tr.innerHTML = `
         <td class="col-week">
-          ${w.weekIndex === currentWeekIndex ? '⭐ ' : ''}Týden ${w.weekNumber}
+          ${w.weekIndex === currentWeekIndex ? '⭐ ' : ''}Týden ${w.isoWeek}
         </td>
         <td class="col-date">${w.dateRangeStr}</td>
         <td class="col-room col-room-1">
@@ -206,6 +220,8 @@
       const tr = document.createElement('tr');
       if (w.weekIndex === currentWeekIndex) {
         tr.classList.add('is-current-week');
+      } else if (w.weekIndex < currentWeekIndex) {
+        tr.classList.add('is-past-week');
       }
 
       // Invert chores to find which room has which chore
@@ -221,7 +237,7 @@
       const p34WC = w.rooms[3].sanitary === "WC" ? 3 : 4;
 
       tr.innerHTML = `
-        <td class="col-week">${w.weekIndex === currentWeekIndex ? '⭐ ' : ''}Týden ${w.weekNumber}</td>
+        <td class="col-week">${w.weekIndex === currentWeekIndex ? '⭐ ' : ''}Týden ${w.isoWeek}</td>
         <td class="col-date">${w.dateRangeStr}</td>
         <td><span class="room-badge badge-r${choreMap['Schody']}">Pokoj ${choreMap['Schody']}</span></td>
         <td><span class="room-badge badge-r${choreMap['Kuchyň']}">Pokoj ${choreMap['Kuchyň']}</span></td>
@@ -234,6 +250,41 @@
       `;
 
       servicesTableBody.appendChild(tr);
+    });
+  }
+
+  // Setup Past Weeks Toggle Buttons
+  function setupPastWeeksToggle() {
+    const pastCount = currentWeekIndex;
+    const toggleBtns = [
+      document.getElementById('btnTogglePastRooms'),
+      document.getElementById('btnTogglePastServices')
+    ];
+
+    if (pastCount > 0) {
+      toggleBtns.forEach(btn => {
+        if (btn) {
+          btn.style.display = 'inline-flex';
+          const countSpan = btn.querySelector('.past-count');
+          if (countSpan) countSpan.textContent = pastCount;
+        }
+      });
+    }
+
+    toggleBtns.forEach(btn => {
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const isShown = document.body.classList.toggle('show-past');
+          toggleBtns.forEach(b => {
+            if (b) {
+              const textSpan = b.querySelector('.toggle-text');
+              if (textSpan) {
+                textSpan.textContent = isShown ? 'Skrýt předchozí týdny' : 'Zobrazit předchozí týdny';
+              }
+            }
+          });
+        });
+      }
     });
   }
 
@@ -293,7 +344,6 @@
 
   // Jump to Current Week button
   document.getElementById('btnCurrentWeek').addEventListener('click', () => {
-    // Switch to tab 1 if not active
     const tab1Btn = document.querySelector('[data-tab="tab-rooms"]');
     tab1Btn.click();
 
@@ -317,5 +367,6 @@
   renderSpotlight(currentWeekIndex);
   renderRoomsTable();
   renderServicesTable();
+  setupPastWeeksToggle();
 
 })();

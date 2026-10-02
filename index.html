@@ -49,7 +49,7 @@
           <p id="spotlightDates" class="spotlight-dates">Termín: Pondělí – Neděle</p>
         </div>
         <div class="spotlight-countdown" id="spotlightCountdown">
-          <span class="countdown-label">Předání v neděli ve 20:00</span>
+          <span class="countdown-label">Konec týdne (Neděle)</span>
           <span id="countdownText" class="countdown-value">Zbývá -- dní</span>
         </div>
       </div>
@@ -89,8 +89,15 @@
     <section id="tab-rooms" class="tab-pane active">
       <div class="table-card">
         <div class="table-header-info">
-          <h3>Celoroční plán po týdnech</h3>
-          <p>Přehled pro každý pokoj: <strong>Společná služba + Koupelna/WC</strong>. Každý týden si můžete odškrtnout splnění.</p>
+          <div class="table-header-title-row">
+            <div>
+              <h3>Rozpis po týdnech v roce</h3>
+              <p>Přehled pro každý pokoj: <strong>Společná služba + Koupelna/WC</strong>. Uplynulé týdny jsou automaticky skryté.</p>
+            </div>
+            <button class="btn btn-outline btn-sm btn-past-toggle" id="btnTogglePastRooms" style="display: none;">
+              👁️ <span class="toggle-text">Zobrazit předchozí týdny</span> (<span class="past-count">0</span>)
+            </button>
+          </div>
         </div>
         <div class="table-responsive">
           <table class="schedule-table" id="roomsTable">
@@ -116,8 +123,15 @@
     <section id="tab-services" class="tab-pane">
       <div class="table-card">
         <div class="table-header-info">
-          <h3>Kdo má jakou službu</h3>
-          <p>Přehled rozdělený na společné prostory (rotace 4 pokojů) a sanitární zóny (rotace po dvojicích).</p>
+          <div class="table-header-title-row">
+            <div>
+              <h3>Kdo má jakou službu</h3>
+              <p>Přehled rozdělený na společné prostory (rotace 4 pokojů) a sanitární zóny (rotace po dvojicích).</p>
+            </div>
+            <button class="btn btn-outline btn-sm btn-past-toggle" id="btnTogglePastServices" style="display: none;">
+              👁️ <span class="toggle-text">Zobrazit předchozí týdny</span> (<span class="past-count">0</span>)
+            </button>
+          </div>
         </div>
         <div class="table-responsive">
           <table class="schedule-table services-table" id="servicesTable">
@@ -171,11 +185,8 @@
               <ul class="task-bullets">
                 <li>Zamést a vytřít celé naše patro (chodbu před bytem).</li>
                 <li>Zamést a vytřít dvoje schody směrem dolů včetně mezipatra.</li>
-                <li>Zkontrolovat, že na mezipatře a schodech nezůstaly žádné letáky, kamínky nebo odpadky.</li>
+                <li>Zkontrolovat, že na mezipatře a schodech nezůstaly žádné odpadky ani nepořádek.</li>
               </ul>
-              <div class="chore-tip">
-                💡 <strong>Doporučený termín:</strong> pátek odpoledne nebo sobota dopoledne.
-              </div>
             </div>
           </article>
 
@@ -212,6 +223,7 @@
                 <li>Pravidelně vynášet pytle se směsným odpadem, jakmile jsou plné.</li>
                 <li>Po vynesení VŽDY ihned nasadit nový čistý pytel do koše!</li>
                 <li>Vynášet tříděný odpad (plast, papír, plechovky, sklo) do kontejnerů.</li>
+                <li>Umýt odpadkový koš, pokud prosákl pytel nebo někdo něco hodil vedle.</li>
                 <li>Udržovat prostor kolem košů čistý (žádné loužičky a skvrny na podlaze).</li>
               </ul>
             </div>
@@ -248,7 +260,7 @@
             <div class="chore-card-body">
               <ul class="task-bullets">
                 <li>Vyčistit umyvadlo, baterii a zrcadlo (od kapek a zubní pasty).</li>
-                <li>Důkladně umýt vanu / sprcháč a vyčistit sítko od vlasů.</li>
+                <li>Důkladně umýt sprchový kout a vyčistit sítko od vlasů.</li>
                 <li>Vytřít podlahu v koupelně.</li>
                 <li>Vyvětrat a zkontrolovat/pověsit předložku.</li>
               </ul>
@@ -285,33 +297,26 @@
             <div class="rule-item">
               <div class="rule-badge">1</div>
               <div>
-                <h4>Předání služeb</h4>
-                <p>Služba se oficiálně předává vždy v <strong>NEDĚLI do 20:00</strong>. Do té doby má mít příslušný pokoj vše hotovo.</p>
+                <h4>Průběžný pořádek</h4>
+                <p><strong>Služba neslouží jako osobní uklízeč!</strong> Každý po sobě ihned utře linku, když něco rozlije nebo rozsype, a udržuje společné prostory v čistotě.</p>
               </div>
             </div>
             <div class="rule-item">
               <div class="rule-badge">2</div>
-              <div>
-                <h4>Nepřítomnost a odjezdy</h4>
-                <p>Když někdo odjíždí na týden domů nebo na dovolenou, je jeho povinností si <strong>včas domluvit výměnu</strong> nebo záskok s jiným pokojem.</p>
-              </div>
-            </div>
-            <div class="rule-item">
-              <div class="rule-badge">3</div>
-              <div>
-                <h4>Průběžný pořádek</h4>
-                <p>Služba neslouží jako osobní uklízeč! Každý po sobě ihned utře linku, když něco rozlije nebo rozsype, a udržuje společné prostory v čistotě.</p>
-              </div>
-            </div>
-            <div class="rule-item">
-              <div class="rule-badge">4</div>
               <div>
                 <h4>Žádné nádobí ve dřezu</h4>
                 <p>Ve dřezu nesmí zůstávat žádné nádobí – plný dřez se pak nedá vůbec používat. Když je zrovna plná myčka, odlož nádobí vedle na linku a po vyklizení ho dej do myčky, nebo ho rovnou hned umyj v ruce.</p>
               </div>
             </div>
             <div class="rule-item">
-              <div class="rule-badge">5</div>
+              <div class="rule-badge">3</div>
+              <div>
+                <h4>Nepřítomnost a odjezdy</h4>
+                <p>Když někdo odjíždí na týden domů nebo na dovolenou, je jeho povinností si <strong>včas domluvit výměnu</strong> nebo záskok s jiným pokojem.</p>
+              </div>
+            </div>
+            <div class="rule-item">
+              <div class="rule-badge">4</div>
               <div>
                 <h4>Spotřební materiál a chemie</h4>
                 <p>Když dochází jar, tablety do myčky, WC gel, toaletní papír nebo pytle do koše, tak to koupíš a hodíš do SettleUp.</p>

@@ -24,12 +24,14 @@ Responzivní webová aplikace a Excel tabulka pro spravedlivou rotaci úklidový
 
 ## 🚀 Funkce webové aplikace
 * 📱 **Plně responzivní design:** optimalizováno pro mobily, tablety i desktop.
-* ⭐ **Automatická detekce aktuálního týdne:** při otevření hned vidíte, kdo má zrovna jakou službu a kolik dní zbývá do nedělního předání (20:00).
+* ⭐ **Automatická detekce aktuálního týdne:** při otevření hned vidíte, kdo má zrovna jakou službu a kolik zbývá do konce týdne.
+* 📅 **Číslování podle týdnů v roce:** tabulka zobrazuje reálná čísla týdnů v kalendářním roce (např. Týden 41).
+* 👁️ **Automatické skrývání uplynulých týdnů:** aktuální týden je vždy nahoře na prvním řádku a předchozí jsou skryté (s možností zobrazení historie tlačítkem).
 * 👥 **Filtrování podle pokojů:** rychlý náhled pro obyvatele konkrétního pokoje.
 * 📋 **3 pohledy / záložky:**
-  1. *Rozpis podle pokojů* (celoroční týdenní přehled s povinnostmi jednotlivých pokojů).
+  1. *Rozpis podle pokojů* (týdenní přehled s povinnostmi jednotlivých pokojů).
   2. *Rozpis podle služeb* (kdo má na starost jakou oblast).
-  3. *Náplň služeb & Zlatá pravidla spolubydlení* (detailní checklisty a zásady předávání služeb).
+  3. *Náplň služeb & Zlatá pravidla spolubydlení* (detailní soupis prací a pravidla).
 * 📥 **Možnost stažení původního Excelu (`rozpis_sluzeb_byt.xlsx`)** přímo z aplikace.
 * 🖨️ **Tiskový režim:** stisknutím tlačítka tisku nebo Ctrl+P se tabulka naformátuje pro tisk na nástěnku/ledničku.
 
