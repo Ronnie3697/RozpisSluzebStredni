@@ -163,8 +163,6 @@
         tr.classList.add('is-current-week');
       }
 
-      const isChecked = localStorage.getItem(`schedule_checked_w${w.weekIndex}`) === 'true';
-
       tr.innerHTML = `
         <td class="col-week">
           ${w.weekIndex === currentWeekIndex ? '⭐ ' : ''}Týden ${w.weekNumber}
@@ -194,20 +192,9 @@
             <span class="duty-sub">${SANITARY_ICONS[w.rooms[4].sanitary]} ${w.rooms[4].sanitary}</span>
           </div>
         </td>
-        <td class="col-status">
-          <input type="checkbox" class="custom-checkbox" data-week="${w.weekIndex}" ${isChecked ? 'checked' : ''}>
-        </td>
       `;
 
       roomsTableBody.appendChild(tr);
-    });
-
-    // Checkbox listener
-    roomsTableBody.addEventListener('change', (e) => {
-      if (e.target.matches('.custom-checkbox')) {
-        const wIdx = e.target.getAttribute('data-week');
-        localStorage.setItem(`schedule_checked_w${wIdx}`, e.target.checked);
-      }
     });
   }
 
