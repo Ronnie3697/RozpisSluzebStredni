@@ -27,7 +27,7 @@ Responzivní webová aplikace a Excel tabulka pro spravedlivou rotaci úklidový
 * ⭐ **Automatická detekce aktuálního týdne:** při otevření hned vidíte, kdo má zrovna jakou službu a kolik dní zbývá do nedělního předání (20:00).
 * 👥 **Filtrování podle pokojů:** rychlý náhled pro obyvatele konkrétního pokoje.
 * 📋 **3 pohledy / záložky:**
-  1. *Rozpis podle pokojů* (celoroční týdenní přehled s interaktivním zaškrtáváním splnění).
+  1. *Rozpis podle pokojů* (celoroční týdenní přehled s povinnostmi jednotlivých pokojů).
   2. *Rozpis podle služeb* (kdo má na starost jakou oblast).
   3. *Náplň služeb & Zlatá pravidla spolubydlení* (detailní checklisty a zásady předávání služeb).
 * 📥 **Možnost stažení původního Excelu (`rozpis_sluzeb_byt.xlsx`)** přímo z aplikace.
